@@ -144,6 +144,10 @@ def dark_matter_density_profile(radius, rho_0, r_s):
     return rho_0 / ((radius / r_s) * (1 + radius / r_s)**2)
 
 def simulate_dark_matter_distribution(radius_range, rho_0, r_s):
+    if radius_range > 100:
+        st.error("Radius range too large! Please enter a value less than 100.")
+        return
+
     radii = np.linspace(0.1, radius_range, 100)
     densities = dark_matter_density_profile(radii, rho_0, r_s)
     fig, ax = plt.subplots(figsize=(10, 6))
@@ -155,6 +159,13 @@ def simulate_dark_matter_distribution(radius_range, rho_0, r_s):
 
 # Black Hole Lensing
 def black_hole_lensing(mass, distance, num_rays=100):
+    if mass > 1e32:
+        st.error("Mass too large! Please enter a value less than 1e32 kg.")
+        return
+    if distance > 1e14:
+        st.error("Distance too large! Please enter a value less than 1e14 m.")
+        return
+
     G = 6.67430e-11  # gravitational constant
     c = 3e8  # speed of light
     theta = np.linspace(-np.pi/2, np.pi/2, num_rays)
@@ -170,6 +181,13 @@ def black_hole_lensing(mass, distance, num_rays=100):
 
 # Quantum Fields
 def simulate_quantum_field(grid_size, time_steps):
+    if grid_size > 100:
+        st.error("Grid size too large! Please enter a value less than 100.")
+        return
+    if time_steps > 1000:
+        st.error("Time steps too large! Please enter a value less than 1000.")
+        return
+
     psi = np.random.rand(grid_size, grid_size)
     for _ in range(time_steps):
         psi += np.random.normal(0, 0.1, (grid_size, grid_size))
@@ -241,7 +259,7 @@ def main():
     elif choice == "Dark Matter Simulation":
         st.header("Dark Matter Simulation")
         st.write("Simulate the distribution of dark matter based on a given density profile.")
-        radius_range = st.number_input("Enter radius range:", min_value=0.1, value=50.0)
+        radius_range = st.number_input("Enter radius range:", min_value=0.1, value=50.0, max_value=100.0)
         rho_0 = st.number_input("Enter central density (rho_0):", min_value=0.0, value=0.3)
         r_s = st.number_input("Enter scale radius (r_s):", min_value=0.1, value=10.0)
         if st.button("Run Simulation"):
@@ -250,16 +268,16 @@ def main():
     elif choice == "Black Hole Lensing":
         st.header("Black Hole Lensing")
         st.write("Visualize the gravitational lensing effect caused by a black hole.")
-        mass = st.number_input("Enter mass of the black hole (kg):", min_value=1e20, value=1e30)
-        distance = st.number_input("Enter distance of light source (m):", min_value=1e10, value=1e13)
+        mass = st.number_input("Enter mass of the black hole (kg):", min_value=1e20, value=1e30, max_value=1e32)
+        distance = st.number_input("Enter distance of light source (m):", min_value=1e10, value=1e13, max_value=1e14)
         if st.button("Run Simulation"):
             black_hole_lensing(mass, distance)
 
     elif choice == "Quantum Fields":
         st.header("Quantum Fields")
         st.write("Simulate the behavior of a quantum field on a grid.")
-        grid_size = st.number_input("Enter grid size:", min_value=10, value=50)
-        time_steps = st.number_input("Enter number of time steps:", min_value=10, value=100)
+        grid_size = st.number_input("Enter grid size:", min_value=10, value=50, max_value=100)
+        time_steps = st.number_input("Enter number of time steps:", min_value=10, value=100, max_value=1000)
         if st.button("Run Simulation"):
             simulate_quantum_field(grid_size, time_steps)
 
