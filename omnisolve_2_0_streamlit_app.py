@@ -181,6 +181,10 @@ def simulate_quantum_field(grid_size, time_steps):
 
 # Universe Evolution
 def simulate_universe_evolution(time_steps):
+    if time_steps > 1000:
+        st.error("Time steps too large! Please enter a value less than 1000.")
+        return
+
     scale_factor = np.linspace(1, 100, time_steps)
     fig, ax = plt.subplots()
     ax.plot(range(time_steps), scale_factor)
@@ -262,7 +266,7 @@ def main():
     elif choice == "Universe Evolution":
         st.header("Universe Evolution")
         st.write("Simulate the evolution of the universe over time.")
-        time_steps = st.number_input("Enter number of time steps:", min_value=10, value=100)
+        time_steps = st.number_input("Enter number of time steps:", min_value=10, value=100, max_value=1000)
         if st.button("Run Simulation"):
             simulate_universe_evolution(time_steps)
 
